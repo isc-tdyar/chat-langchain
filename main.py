@@ -10,9 +10,10 @@ from langserve import add_routes
 from langsmith import Client
 from pydantic import BaseModel
 
-from chain import ChatRequest, answer_chain
+from chain_yoky import ChatRequest, answer_chain
 
-client = Client()
+# Not using langsmith for now
+client = None
 
 app = FastAPI()
 app.add_middleware(
@@ -41,13 +42,14 @@ class SendFeedbackBody(BaseModel):
 
 @app.post("/feedback")
 async def send_feedback(body: SendFeedbackBody):
-    client.create_feedback(
-        body.run_id,
-        body.key,
-        score=body.score,
-        comment=body.comment,
-        feedback_id=body.feedback_id,
-    )
+    # not implemented
+    # client.create_feedback(
+    #     body.run_id,
+    #     body.key,
+    #     score=body.score,
+    #     comment=body.comment,
+    #     feedback_id=body.feedback_id,
+    # )
     return {"result": "posted feedback successfully", "code": 200}
 
 
@@ -65,11 +67,11 @@ async def update_feedback(body: UpdateFeedbackBody):
             "result": "No feedback ID provided",
             "code": 400,
         }
-    client.update_feedback(
-        feedback_id,
-        score=body.score,
-        comment=body.comment,
-    )
+    # client.update_feedback(
+    #     feedback_id,
+    #     score=body.score,
+    #     comment=body.comment,
+    # )
     return {"result": "patched feedback successfully", "code": 200}
 
 
@@ -98,12 +100,12 @@ class GetTraceBody(BaseModel):
 @app.post("/get_trace")
 async def get_trace(body: GetTraceBody):
     run_id = body.run_id
-    if run_id is None:
-        return {
-            "result": "No LangSmith run ID provided",
-            "code": 400,
-        }
-    return await aget_trace_url(str(run_id))
+    # if run_id is None:
+    #     return {
+    #         "result": "No LangSmith run ID provided",
+    #         "code": 400,
+    #     }
+    # return await aget_trace_url(str(run_id))
 
 
 if __name__ == "__main__":
